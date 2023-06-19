@@ -2,32 +2,40 @@
 using Newtonsoft.Json;
 using producer_kafka;
 
-var text = File.ReadAllText("data.json");
-List list = JsonConvert.DeserializeObject<List>(text);
-
-const string topic = "Actions";
-var id_producer = $"Worker {new Random().Next(1, 100)}";
-var config = new ProducerConfig()
+public class Program
 {
-    BootstrapServers = "172.176.196.216:9094"
-};
-try
-{
-    using (var producer = new ProducerBuilder<string, string>(config).Build())
+    public static void Main()
     {
-        foreach (var item in list.objects)
+
+        var text = File.ReadAllText("data.json");
+        List list = JsonConvert.DeserializeObject<List>(text);
+
+        const string topic = "Actions";
+        var id_producer = $"Worker {new Random().Next(1, 100)}";
+        var config = new ProducerConfig()
         {
-            var json = JsonConvert.SerializeObject(item);
-            await producer.ProduceAsync(topic, new Message<string, string>
+            BootstrapServers = "172.176.196.216:9094"
+        };
+        try
+        {
+            using (var producer = new ProducerBuilder<string, string>(config).Build())
             {
-                Key = id_producer,
-                Value = json
-            });
+                foreach (var item in list.objects)
+                {
+                    var json = JsonConvert.SerializeObject(item);
+                    producer.ProduceAsync(topic, new Message<string, string>
+                    {
+                        Key = id_producer,
+                        Value = json
+                    }).Wait();
+                }
+            }
+        }
+        catch (ProduceException<string, string> e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(e.Message);
         }
     }
-}
-catch (ProduceException<string, string> e)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine(e.Message);
+
 }
