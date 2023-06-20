@@ -5,7 +5,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["producer-kafka/producer-kafka.csproj", "producer-kafka/"]
+COPY ["producer-kafka.csproj", "producer-kafka/"]
 RUN dotnet restore "producer-kafka.csproj"
 COPY . .
 WORKDIR "/src/producer-kafka"
