@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace producer_kafka
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
