@@ -1,41 +1,44 @@
 ﻿using Confluent.Kafka;
 using Newtonsoft.Json;
-using producer_kafka;
 
-public class Program
+namespace producer_kafka
 {
-    public static void Main()
+    public class Program
     {
-
-        var text = File.ReadAllText("data.json");
-        List list = JsonConvert.DeserializeObject<List>(text);
-
-        const string topic = "Actions";
-        var id_producer = $"Worker {new Random().Next(1, 100)}";
-        var config = new ProducerConfig()
+        public static void Main()
         {
-            BootstrapServers = "172.176.196.216:9094"
-        };
-        try
-        {
-            using (var producer = new ProducerBuilder<string, string>(config).Build())
+
+            var text = File.ReadAllText("data.json");
+            List list = JsonConvert.DeserializeObject<List>(text);
+
+            const string topic = "Actions";
+            var id_producer = $"Worker {new Random().Next(1, 100)}";
+            var config = new ProducerConfig()
             {
-                foreach (var item in list.objects)
+                BootstrapServers = "172.176.196.216:9094"
+            };
+            try
+            {
+                using (var producer = new ProducerBuilder<string, string>(config).Build())
                 {
-                    var json = JsonConvert.SerializeObject(item);
-                    producer.ProduceAsync(topic, new Message<string, string>
+                    foreach (var item in list.objects)
                     {
-                        Key = id_producer,
-                        Value = json
-                    }).Wait();
+                        var json = JsonConvert.SerializeObject(item);
+                        producer.ProduceAsync(topic, new Message<string, string>
+                        {
+                            Key = id_producer,
+                            Value = json
+                        }).Wait();
+                    }
                 }
             }
+            catch (ProduceException<string, string> e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(e.Message);
+            }
         }
-        catch (ProduceException<string, string> e)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(e.Message);
-        }
+
     }
 
 }
