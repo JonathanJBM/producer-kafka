@@ -7,7 +7,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <StartupObject>producer_kafka.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
