@@ -5,7 +5,7 @@ namespace producer_kafka
 {
     public class Program
     {
-        public static void Main()
+        public static void Main(string[] args)
         {
 
             var text = File.ReadAllText("data.json");
